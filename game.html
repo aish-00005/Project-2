@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Tic Tac Toe</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .game {
+      text-align: center;
+    }
+    .board {
+      display: grid;
+      grid-template-columns: repeat(3, 100px);
+      gap: 5px;
+      margin: 20px auto;
+    }
+    .cell {
+      width: 100px;
+      height: 100px;
+      background: #fff;
+      border: 2px solid #333;
+      font-size: 2em;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+    }
+    .cell:hover {
+      background: #e0e0e0;
+    }
+    #message {
+      font-size: 1.2em;
+      margin-top: 10px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 1em;
+    }
+  </style>
+</head>
+<body>
+<div class="game">
+  <h2>Tic Tac Toe</h2>
+  <div class="board" id="board"></div>
+  <div id="message"></div>
+  <button onclick="resetGame()">Restart</button>
+</div>
+
+<script>
+  const board = document.getElementById("board");
+  const message = document.getElementById("message");
+  let currentPlayer = "X";
+  let cells = Array(9).fill("");
+
+  function drawBoard() {
+    board.innerHTML = "";
+    cells.forEach((val, i) => {
+      const cell = document.createElement("div");
+      cell.className = "cell";
+      cell.innerText = val;
+      cell.onclick = () => makeMove(i);
+      board.appendChild(cell);
+    });
+  }
+
+  function makeMove(index) {
+    if (cells[index] !== "" || checkWinner()) return;
+    cells[index] = currentPlayer;
+    drawBoard();
+    const winner = checkWinner();
+    if (winner) {
+      message.innerText = `Player ${winner} wins!`;
+    } else if (!cells.includes("")) {
+      message.innerText = "It's a draw!";
+    } else {
+      currentPlayer = currentPlayer === "X" ? "O" : "X";
+      message.innerText = `Player ${currentPlayer}'s turn`;
+    }
+  }
+
+  function checkWinner() {
+    const winPatterns = [
+      [0,1,2],[3,4,5],[6,7,8],
+      [0,3,6],[1,4,7],[2,5,8],
+      [0,4,8],[2,4,6]
+    ];
+    for (let [a,b,c] of winPatterns) {
+      if (cells[a] && cells[a] === cells[b] && cells[a] === cells[c]) {
+        return cells[a];
+      }
+    }
+    return null;
+  }
+
+  function resetGame() {
+    cells = Array(9).fill("");
+    currentPlayer = "X";
+    message.innerText = "Player X's turn";
+    drawBoard();
+  }
+
+  resetGame();
+</script>
+</body>
+</html>
+
